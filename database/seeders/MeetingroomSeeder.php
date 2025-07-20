@@ -20,20 +20,20 @@ class MeetingroomSeeder extends Seeder
         ProductMeetingRoom::create([
             'meetingroom_name'=>'Bagang Meetingroom',
             'location'=>'Lalassa Beach Club',
-            'hotline'=>'',
-            'note'=>''
+            'hotline'=>'08111580025',
+            'note'=>'PT. Banten West Java'
         ]);
         ProductMeetingRoom::create([
             'meetingroom_name'=>'Liwungan Meetingroom',
             'location'=>'Tanjung Lesung Beach Hotel',
-            'hotline'=>'',
-            'note'=>''
+            'hotline'=>'08111929005',
+            'note'=>'PT. Banten West Java'
         ]);
         ProductMeetingRoom::create([
             'meetingroom_name'=>'Panaitan Meetingroom',
             'location'=>'Tanjung Lesung Beach Hotel',
-            'hotline'=>'',
-            'note'=>''
+            'hotline'=>'08111929005',
+            'note'=>'PT. Banten West Java'
         ]);
     }
 }

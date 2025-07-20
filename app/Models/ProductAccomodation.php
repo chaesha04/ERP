@@ -12,6 +12,6 @@ class ProductAccomodation extends Model
 
     public function hotelDetails()
     {
-        return $this->hasMany(HotelDetail::class, 'hotel_name');
+        return $this->hasMany(HotelDetail::class, 'accommodation_id');
     }
 }

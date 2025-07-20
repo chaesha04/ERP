@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use PDO;
 
 class Booking extends Model
 {
@@ -13,4 +14,5 @@ class Booking extends Model
     // public function assign_rooms() {
     //     return $this->hasMany(BookingRoomList::class, 'booking_id');
     // }
+
 }

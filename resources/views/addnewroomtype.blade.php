@@ -2,11 +2,30 @@
     <x-slot:title>Add New Room Type</x-slot:title>
     <main>
         <div class="settings">
-
-            <h2>Add Room Type for {{ $accommodation->hotel_name }}</h2>
-            <form action="{{ route('hotel-details.store') }}" method="POST">
+            <table class="data" style="margin-bottom: 100px;">
+                <thead>
+                        <tr>
+                            <td colspan="5" style="text-align: left; font-size: 34px; background-color: transparent; text-transform: uppercase; padding: 5px;">Add New Room Type : {{ $accommodation->hotel_name }}</td>
+                        </tr>
+                        <tr>
+                            <th style="background-color:pink;">Hotel ID</th>
+                            <th style="background-color:pink;">Location</th>
+                            <th style="background-color:pink;">Hotline</th>
+                            <th style="background-color:pink;">Note</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ $accommodation->id }}</td>
+                        <td>{{ $accommodation->location }}</td>
+                        <td>{{ $accommodation->hotline }}</td>
+                        <td>{{ $accommodation->note }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <form action="/product/accommodation/{id}/addnew_roomtype" method="POST">
                 @csrf
-                <input type="hidden" name="hotel_name" value="{{ $accommodation->id }}">
+                <input type="hidden" name="accommodation_id" value="{{ $accommodation->id }}">
                 <div class="form-row">
                     <div class="form-group">
                         <label>Room Type:</label>
@@ -31,7 +50,7 @@
                         <input type="number" name="unit" min="0" value="0" style="text-align: right;"><br>
                     </div>
                 </div>
-                <div style="justify-content:center; display: flex; align-items: center;">
+                <div style="justify-content:center; display: flex; align-items: center; padding: 50px;">
                     <button type="submit" class="styled-button">Add Room</button>
                 </div>
                 

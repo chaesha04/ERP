@@ -35,11 +35,15 @@
                             <td colspan="5" style="text-align: left; font-size: 34px; background-color: transparent;">{{ $accomodation->hotel_name }}</td>
                         </tr>
                         <tr>
-                            <td colspan="5" style="text-align: left;background-color: transparent;">
-                                <a href="#" onclick="Cancel({{ $accomodation->id }})"><button class="button-style">Cancel</button></a>
-                                <a href="#" onclick="editProductAccommodation({{ $accomodation->id }})"><button class="button-style">Edit Product</button></a>
-                                <a href="#" onclick="deleteProductAccommodation({{ $accomodation->id }})"><button class="button-style">Delete Product</button></a>
-                            </td>
+                        <td colspan="5" style="text-align: left;background-color: transparent;">
+                            <div class="form-customer">
+                                    <button onclick="Cancel({{ $accomodation->id }})">Cancel</button>
+                                    <button onclick="editProductAccommodation({{ $accomodation->id }})">Edit Product</button>
+                                    <button onclick="deleteProductAccommodation({{ $accomodation->id }})">Delete Product</button>
+                                </a>
+                            </div>
+                        </td>
+
                         </tr>
                         <tr>
                             <th style="background-color:pink;">Hotel ID</th>
@@ -80,49 +84,92 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($hotelDetails as $item)
+                        @forelse($accomodation->hotelDetails as $rooms)
                             <tr>
-                                <td>{{ $item->room_type }}</td>
-                                <td>{{ $item->bedroom_qty }} Bedroom</td>
-                                <td>{{ $item->unit }} Unit</td>
-                                <td>{{ $item->extra_facility }}</td>
-                                <td><a href="#">Edit</a></td>
-                                <td><a href="#" onclick="deleteHotelDetail({{ $item->id }})">Delete</a></td>
+                                <td>{{ $rooms->room_type }}</td>
+                                <td>{{ $rooms->bedroom_qty }} Bedroom</td>
+                                <td>{{ $rooms->unit }} Unit</td>
+                                <td>{{ $rooms->extra_facility }}</td>
+                                <td><a href="#" onclick="editHotelDetail({{ $rooms->id }})">Edit</a></td>
+                                <td><a href="#" onclick="deleteHotelDetail({{ $rooms->id }})">Delete</a></td>
                             </tr>
-                        @empty
+                            @empty
                             <tr>
-                                <td colspan="6" class="text-center">No room details found.</td>
+                                <td colspan="5">The room type for this hotel is empty.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+                {{-- <div id="edit-hotel-detail" style="display: none; margin-top: 40px;">
+                    <form method="POST" action="/hotel-details">
+                        @csrf
+                        <table class="data">
+                            <tr>
+                                <th colspan="4" style="text-transform:capitalize;">Edit Room Type: {{ $item->room_type }}</th>
+                            </tr>
+                            <tr>
+                                <th><label>Room Type</label></th>
+                                <th><label>Qty of Bedroom</label></th>
+                                <th><label>Unit</label></th>
+                                <th><label>Extra Facility</label></th>
+                            </tr>
+                            <tr>
+                                <input type="hidden" name="accomodation_id" value="{{ $accomodation->id }}">
+                                @foreach ( $accomodation->HotelDetail as $selectedroom)
+                                    
+                                <td>
+                                    <input type="text" name="room_type" value="{{ old('room_type', $selectedroom->room_type) }}">
+                                </td>
+                                <td>
+                                    <input type="number" name="bedroom_qty" value="{{ old('bedroom_qty', $selectedroom->bedroom_qty) }}" min="0"> Bedroom
+                                </td>
+                                <td>
+                                    <input type="number" name="uniqt" id="unit" value="{{ old('unit', $selectedroom->unit) }}"> Unit
+                                </td>
+                                <td>
+                                    <input type="text" name="extra_facility" id="extra_facility" value="{{ old('extra_facility', $selectedroom->extra_facility) }}">
+                                </td>
+                                @endforeach
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align:right; padding-right: 20px;">
+                                    <button type="submit" class="styled-button">Update {{ $item->room_type }}</button>
+                                </th>
+                            </tr>
+                        </table>
+                    </form>
+                </div> --}}
             </div>
         </div>
     </main>
 </x-layoutinventory>
 <script>
-    const hotelName = "{{ urlencode($accomodation->hotel_name) }}";
-        
-function deleteHotelDetail(id){
-    if (confirm('Are you sure to delete this room type?')) {
-        fetch('/hotel-detail/' + id, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            },
-        })
-        .then(response => {
-            if (response.ok){
-                alert('Room type deleted successfully!');
-                window.location.href = '/product/accommodation/';
+    const hotelName = "{{ urlencode($accomodation->room_type) }}";
+    
+    function deleteHotelDetail(id){
+        if (confirm('Are you sure to delete this room type?')) {
+            fetch('/product/accommodation/hoteldetail/' + id +'/delete', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+            })
+            .then(response => {
+                if (response.ok){
+                    alert('Room type deleted successfully!');
+                    location.reload();
 
-            } else {
-                alert('Failed to delete the room type.');
-            }
-        });
+                } else {
+                    alert('Failed to delete the room type.');
+                }
+            });
+        }
     }
-}
+    function editHotelDetail(id) {
+        window.location.href = '/product/accommodation/hoteldetail/'+id+'/edit';
+    }
+
 
     function deleteProductAccommodation(id){
         if (confirm('Are you sure to delete this accommodation?')) {
@@ -146,9 +193,8 @@ function deleteHotelDetail(id){
     function editProductAccommodation(id){
         window.location.href = '/product/accommodation/'+id+'/edit';
     }
-    function Cancel(id){
-        window.location.href = '/product/accommodation/';
-    }
-    
 
+    function Cancel(id){
+        window.location.href = '/product/accommodation';
+    }
 </script>

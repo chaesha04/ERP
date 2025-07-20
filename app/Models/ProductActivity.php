@@ -12,5 +12,6 @@ class ProductActivity extends Model
         'watersport',
         'price',
         'note',
+        'unit',
     ];
 }

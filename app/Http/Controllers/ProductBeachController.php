@@ -39,6 +39,9 @@ class ProductBeachController extends Controller
     {
         $beach = ProductBeach::findOrFail($id);
     
+        if ($request->has('beach_name')) {
+            $beach->beach_name = $request->beach_name;
+        }
         if ($request->has('location')) {
             $beach->location = $request->location;
         }

@@ -17,27 +17,27 @@ class ProductAccomodationSeeder extends Seeder
     {
         ProductAccomodation::create([
             'hotel_name'=>'Tanjung Lesung Beach Hotel',
-            'hotline'=> '081122334455',
+            'hotline'=> '08111929005',
             'location'=>'Tanjung Jaya, Panimbang, Pandeglang, Banten',
-            'note'=>' '
+            'note'=>'PT. Banten West Java'
         ]);
         ProductAccomodation::create([
             'hotel_name'=>'Ladda Bay Village',
-            'hotline'=> '081122334455',
+            'hotline'=> '0252802900',
             'location'=>'Tanjung Jaya, Panimbang, Pandeglang, Banten',
-            'note'=>' '
+            'note'=>'PT. Banten West Java'
         ]);
         ProductAccomodation::create([
             'hotel_name'=>'Lalassa Beach Club',
-            'hotline'=> '081122334455',
+            'hotline'=> '08111580025',
             'location'=>'Tanjung Jaya, Panimbang, Pandeglang, Banten',
-            'note'=>' '
+            'note'=>'PT. Banten West Java'
         ]);
         ProductAccomodation::create([
             'hotel_name'=>'Kalicaa Villa',
-            'hotline'=> '081122334455',
+            'hotline'=> '0253802900',
             'location'=>'Tanjung Jaya, Panimbang, Pandeglang, Banten',
-            'note'=>' '
+            'note'=>'PT. Banten West Java'
         ]);
     }
 }

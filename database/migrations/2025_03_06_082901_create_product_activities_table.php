@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('watersport');
             $table->integer('price');
+            $table->integer('unit');
             $table->string('note');
             $table->timestamps();
         });

@@ -7,15 +7,14 @@
                 <form action="{{ url('/product/watersport/' . $item->id . '/edit') }}" method="POST">
                 <table class="header-detail">
                 <tr>
-                    <td rowspan="2"><p><a href="/product/item">Edit Watersport Data: {{ $item->watersport }} - ({{ $item->id }})</a></p></td>
+                    <td rowspan="2"><p><a href="/product/item">Edit Watersport Data: [{{ $item->id }}] - {{ $item->watersport }}</a></p></td>
                     <td colspan="2"></td>
                 </tr>
                 <tr></tr>
                 <tr>   
                     <td>
                         <a href="#"><button type="button" onclick="history.back()">Cancel</button></a>
-                        <a href="#" onclick="editProductAccommodation({{ $item->id }})"><button>Edit</button></a>
-                        <a href="#" onclick="deleteProductAccommodation({{ $item->id }})"><button>Delete</button></a>
+                        {{-- <a href="#" onclick="deleteWatersport({{ $item->id }})"><button>Delete</button></a> --}}
                         <button type="submit">Update</button>
 
                     </td>
@@ -32,10 +31,6 @@
                                         <td>
                                             <label for="watersport">Watersport</label>
                                             <input type="text" name="watersport" id="watersport" value="{{ old('watersport', $item->watersport) }}">
-                                        </td>
-                                        <td>
-                                            <label for="location">Location</label>
-                                            <input type="text" name="location" id="location" value="{{ old('location', $item->location) }}">
                                         </td>
                                         <td>
                                             <label for="price">Price</label>
@@ -78,7 +73,7 @@
             .then(response => {
                 if (response.ok){
                     alert('Product Watersport deleted successfully!');
-                    window.location.href = '/product/meetingroom';
+                    window.location.href = '/product/watersport';
                 } else {
                     alert('Failed to delete the Product.');
                 }

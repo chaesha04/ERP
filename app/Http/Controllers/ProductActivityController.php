@@ -36,5 +36,12 @@ class ProductActivityController extends Controller
     
         return redirect('/product/watersport')->with('success', 'Product updated successfully!');
     }
+
+    public function destroy($id){
+        $item = ProductActivity::findOrFail($id);
+        $item->forceDelete();
+
+        return response()->json(['message'=>'Product Activity deleted successfully'],200);
+    }
     
 }

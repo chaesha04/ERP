@@ -20,7 +20,16 @@ class WebsitetoERPController extends Controller
         $webBooking = $query->paginate(20);
 
         return view('bnr_accommodation', compact('webBooking'), [
-            'title' => 'Customer Data'
+            'title' => 'Accommodation | Website Order'
         ]);
     }
+        public function detail($id){
+            $seedetail = Booking::where('id', $id)->first();
+
+            if(!$seedetail){
+                abort(404);
+            };
+
+            return view('bnr_accommodationdetail', compact('seedetail'),['title' => 'Accommodation | Website Detail']);
+        }
 }

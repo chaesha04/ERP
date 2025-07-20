@@ -380,15 +380,15 @@
             }  
             
             .form-customer select, .form-customer input, 
-            .form-customer button, .product-detail button
-            .data table.data tr td a button.button-style{
+            .form-customer button, .product-detail button, button.accommodationdetail{
                 padding: 5px;
                 border-radius: 5px;
             }
             .form-customer input{
                 text-align:left;
                 align-content: left;
-            }     
+            }   
+
 
             
     </style>

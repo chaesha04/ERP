@@ -40,6 +40,8 @@ use App\Http\Controllers\GroupbookingOrderController;
 use App\Http\Controllers\GroupBookingDetailController;
 use App\Http\Controllers\ProductMeetingRoomController;
 use App\Http\Controllers\ProductAccomodationController;
+use App\Http\Controllers\StatusFrontOfficeController;
+use App\Models\HotelDetail;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,6 +87,8 @@ Route::middleware('auth')->group((function(){
 
 
     Route::get('/bookingandreservation/accommodation', [WebsitetoERPController::class, 'index'])->name('websitetoerp.index');
+    Route::get('/bookingandreservation/accommodation/{id}', [WebsitetoERPController::class, 'detail'])->name('websitetoerp.detail');
+    Route::post('/bookingandreservation/accommodation/statusfrontoffice/store', [StatusFrontOfficeController::class, 'store']);
 
     Route::get('/visitor', [VisitorDetailController::class, 'index'])->name('visitor.index');
 
@@ -115,31 +119,21 @@ Route::middleware('auth')->group((function(){
     Route::get('/groupbooking/pdf/banqueteventorder/{id}', [BanquetEventOrderPDF::class, 'show'])->name('generate-beo');
 
     Route::get('/groupbooking/pdf/guaranteeletter/{id}', [GuaranteeLetterPDF::class, 'show'])->name('generate-guaranteeletter');
-
-    // Route::get('/bookingandreservation/meetingroom', function () {
-        //     $meetingroom = VenueDetail::all();
-        //     return view('venuedetail',compact('meetingroom'), ['title' => 'Meeting Room Booking | Booking and Reservation']);
-        // });
         
-        
-        Route::get('/product/accommodation', function () {
-        $accomodations = ProductAccomodation::all(); // ambil data
-        return view('accommodation', compact('accomodations' ),['title' => 'Product | Accomodation']); // kirim ke blade
+    
+    
+    Route::get('/product/accommodation', function () {
+    $accomodations = ProductAccomodation::all(); // ambil data
+    return view('accommodation', compact('accomodations' ),['title' => 'Product | Accomodation']);
     });
 
-
-    Route::delete('/product/accommodation/{id}', [ProductAccomodationController::class, 'destroy']);
-    Route::get('/product/accommodation/{id}/edit', [ProductAccomodationController::class, 'edit']);
-    Route::put('/product/accommodation/{id}/edit', [ProductAccomodationController::class, 'update']);
-
-
-
     Route::get('/product/accommodation/addnew', function () {
-        $accommodation = ProductAccomodation::all(); // ambil data
+        $accommodation = ProductAccomodation::all();
         return view('addnewaccom', compact('accommodation' ),['title' => 'Product | Beach: Add New']); // kirim ke blade
     });
     Route::post('/product/accommodation/addnew', function (Request $request) {
         $validated = $request->validate([
+            // 'accommodation_id' => 'required|max:255',
             'hotel_name' => 'required|max:255',
             'location' => 'required|max:255',
             'hotline' => 'required|max:255',
@@ -147,6 +141,7 @@ Route::middleware('auth')->group((function(){
         ]);
 
         ProductAccomodation::create([
+            // 'accommodation_id' => $request->accommodation_id,
             'hotel_name' => $request->hotel_name,
             'location' => $request->location,
             'hotline' => $request->hotline,
@@ -156,11 +151,27 @@ Route::middleware('auth')->group((function(){
         return redirect('/product/accommodation')->with('success', 'Product added successfully');
 
     });
+    Route::get('/product/accommodation/{id}', function ($id) {
+        $accomodation = ProductAccomodation::with('hotelDetails')->findOrFail($id);
+        $hotelDetails = $accomodation->hotelDetails;
+        return view('accommodationdetail', compact('accomodation', 'hotelDetails'), [
+            'title' => 'Product | Accomodation: ' . $accomodation->hotel_name
+        ]);
+    });
+    Route::delete('/product/accommodation/{id}', [ProductAccomodationController::class, 'destroy']);
+    Route::get('/product/accommodation/{id}/edit', [ProductAccomodationController::class, 'edit']);
+    Route::put('/product/accommodation/{id}/edit', [ProductAccomodationController::class, 'update']);
+
 
     Route::get('/product/accommodation/{id}/addnew_roomtype', [ProductAccomodationController::class, 'createRoomType']);
+    Route::post('/product/accommodation/{id}/addnew_roomtype', [HotelDetailController::class, 'store']);
 
     Route::get('/product/accommodation/{room_type}', [ProductAccomodationController::class, 'show']);
-    Route::resource('hotel-details', HotelDetailController::class)->only(['store', 'destroy']);
+
+    Route::get('/product/accommodation/hoteldetail/{id}/edit', [HotelDetailController::class, 'edit']);
+    Route::put('/product/accommodation/hoteldetail/{id}/edit', [HotelDetailController::class, 'update']);
+    Route::put('/product/accommodation/hoteldetail/{id}/edit', [HotelDetailController::class, 'update']);
+    Route::delete('/product/accommodation/hoteldetail/{id}/delete', [HotelDetailController::class, 'destroy']);
 
     Route::get('/product/beach', function () {
         $beaches = ProductBeach::all(); // ambil data
@@ -172,9 +183,7 @@ Route::middleware('auth')->group((function(){
     });
 
 
-    Route::delete('/product/beach/{id}', [ProductBeachController::class, 'destroy']);
-
-
+    Route::delete('/product/beach/{id}/delete', [ProductBeachController::class, 'destroy']);
     Route::get('/product/beach/{id}/edit', [ProductBeachController::class, 'edit']);
     Route::put('/product/beach/{id}/edit', [ProductBeachController::class, 'update']);
 
@@ -208,11 +217,11 @@ Route::middleware('auth')->group((function(){
         return view('meetingroom', compact('meetingrooms' ),['title' => 'Product | Meeting Room']); // kirim ke blade
     });
 
-    Route::get('/product/meetingroom/{meetingroom_name}', [ProductMeetingRoomController::class, 'show']);
+    // Route::get('/product/meetingroom/{meetingroom_name}', [ProductMeetingRoomController::class, 'show']);
 
     Route::get('/product/meetingroom/{id}/edit', [ProductMeetingRoomController::class, 'edit']);
     Route::put('/product/meetingroom/{id}/edit', [ProductMeetingRoomController::class, 'update']);
-    Route::delete('/product/meetingroom/{id}', [ProductMeetingRoomController::class, 'destroy']);
+    Route::delete('/product/meetingroom/{id}/delete', [ProductMeetingRoomController::class, 'destroy']);
 
     Route::get('/product/addnew_meetingroom', function () {
         $meetingroom = ProductMeetingRoom::all(); // ambil data
@@ -244,7 +253,8 @@ Route::middleware('auth')->group((function(){
         return view('watersport', compact('activities' ),mergeData: ['title' => 'Product | Watersport']); // kirim ke blade
     });
     Route::get('/product/watersport/{id}/edit', [ProductActivityController::class, 'edit']);
-    Route::put('/product/watersport/{id}', [ProductActivityController::class, 'update']);
+    Route::put('/product/watersport/{id}/edit', [ProductActivityController::class, 'update']);
+    Route::delete('/product/watersport/{id}', [ProductActivityController::class, 'destroy']);
 
     Route::get('/product/addnew_activities', function () {
         return view('addnewwatersport', ['title' => 'Product | Activities : Add New']);
@@ -255,12 +265,14 @@ Route::middleware('auth')->group((function(){
             'watersport' => 'required|max:255',
             'price' => 'required|max:255',
             'note' => 'required',
+            'unit' => 'required',
         ]);
 
         ProductActivity::create([
             'watersport' => $request->watersport,
             'price' => $request->price,
             'note' => $request->note,
+            'unit' => $request->unit,
         ]);
 
         return redirect('/product/watersport')->with('success', 'Employee added successfully');
