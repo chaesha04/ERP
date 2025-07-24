@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RNAController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BanqueteventorderController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BeachController;
 use Database\Factories\PnpProcessFactory;
@@ -27,6 +28,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EventBeoController;
 use App\Http\Controllers\GuaranteeLetterPDF;
 use App\Http\Controllers\BanquetEventOrderPDF;
+use App\Http\Controllers\BeachTicketERPController;
 use App\Http\Controllers\PnpProcessController;
 use App\Http\Controllers\ConfirmationLetterPDF;
 use App\Http\Controllers\HotelDetailController;
@@ -41,6 +43,7 @@ use App\Http\Controllers\GroupBookingDetailController;
 use App\Http\Controllers\ProductMeetingRoomController;
 use App\Http\Controllers\ProductAccomodationController;
 use App\Http\Controllers\StatusFrontOfficeController;
+use App\Models\Banqueteventorder;
 use App\Models\HotelDetail;
 
 /*
@@ -90,18 +93,26 @@ Route::middleware('auth')->group((function(){
     Route::get('/bookingandreservation/accommodation/{id}', [WebsitetoERPController::class, 'detail'])->name('websitetoerp.detail');
     Route::post('/bookingandreservation/accommodation/statusfrontoffice/store', [StatusFrontOfficeController::class, 'store']);
 
+    Route::get('/bookingandreservation/beach', [BeachTicketERPController::class, 'index'])->name('BeachTicketERP.index');
+    Route::get('/bookingandreservation/beach/{order_code}', [BeachTicketERPController::class, 'detail'])->name('BeachTicketERP.detail');
+
     Route::get('/visitor', [VisitorDetailController::class, 'index'])->name('visitor.index');
 
 
-    Route::get('/bookingandreservation/beach', function () {
-        $beaches = GroupbookingOrder::all();
-        return view('bnr_beach',compact('beaches'), ['title' => 'Beach | Website Order']);
+
+
+    Route::get('/bookingandreservation/groupbookingorder/{id}/add_note', function($id){
+        $groupbooking = GroupbookingOrder::with('NoteBEO')->findOrFail($id);
+
+        return view('gbo_requestBEO', [
+            'groupbooking' => $groupbooking,
+            'noteBEO' => $groupbooking->NoteBEO,
+            'title' => 'Group Booking | Booking and Reservation'
+        ]);
     });
 
-    Route::get('/bookingandreservation/groupbookingorder/{id}/add_note', action: function($id){
-        $groupbooking = GroupbookingOrder::with('EventBEO')->findOrFail($id);
-        return view('gbo_requestBEO', compact('groupbooking'), ['title' => 'Group Booking | Booking and Reservation']);
-    }); 
+    Route::post('/bookingandreservation/groupbookingorder/{id}/add_note', [BanqueteventorderController::class,'store']);
+
 
     Route::get('/bookingandreservation/groupbookingorder/{id}/add_event', [GroupBookingOrderController::class, 'GboAddEvent']);
     Route::post('/eventbeo/store/{id}', [EventBeoController::class, 'store'])->name('eventbeo.store');

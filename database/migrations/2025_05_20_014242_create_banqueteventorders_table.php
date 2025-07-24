@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('banqueteventorders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('note_housekeeping');
-            $table->string('note_engineer');
-            $table->string('note_accounting');
-            $table->string('note_kitchen');
-            $table->string('note_sport');
-            $table->string('note_fnb');
-            $table->string('note_lalassa');
+            $table->string('note_housekeeping')->nullable();
+            $table->string('note_engineer')->nullable();
+            $table->string('note_accounting')->nullable();
+            $table->string('note_kitchen')->nullable();
+            $table->string('note_sport')->nullable();
+            $table->string('note_fnb')->nullable();
+            $table->string('note_lalassa')->nullable();
             $table->string('gb_id');
         });
     }

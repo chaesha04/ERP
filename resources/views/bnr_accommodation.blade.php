@@ -17,6 +17,7 @@
                             <form method="GET" action="/bookingandreservation/accommodation">
                                 <select name="field">
                                     <option value="hotel_id" {{ request('field') == 'hotel_id' ? 'selected' : '' }}>Hotel Name</option>
+                                    <option value="room_id" {{ request('field') == 'room_id' ? 'selected' : '' }}>Room Type</option>
                                     <option value="first_name" {{ request('field') == 'first_name' ? 'selected' : '' }}>Customer First Name</option>
                                     <option value="last_name" {{ request('field') == 'last_name' ? 'selected' : '' }}>Customer Last Name</option>
                                     <option value="check_in" {{ request('field') == 'check_in' ? 'selected' : '' }}>Check In</option>
@@ -28,7 +29,24 @@
                             </form>
                         </td>
                         <td>
-                            <p style="text-align:right; color: #6e6e6e;">{{ $webBooking->count() }} Reservation Via Website Data | Page {{ $webBooking->currentPage() }} of {{ $webBooking->lastPage() }}</p>
+                            <p style="text-align:right; color: #6e6e6e; margin-bottom: 0;">{{ $webBooking->count() }} Reservation Via Website Data | Page {{ $webBooking->currentPage() }} of {{ $webBooking->lastPage() }}</p>
+                            <div class="" style="text-align: right;">
+                                    @if ($webBooking->onFirstPage())
+                                        <button disabled style="padding: 6px 12px; margin-right: 5px; background-color: #ccc; border: none; border-radius: 4px;">❮</button>
+                                    @else
+                                        <a href="{{ $webBooking->appends(request()->query())->previousPageUrl() }}">
+                                            <button style="padding: 6px 12px; margin-right: 5px; background-color: #ff79b1; color: white; border: none; border-radius: 4px;">❮</button>
+                                        </a>
+                                    @endif
+
+                                    @if ($webBooking->hasMorePages())
+                                        <a href="{{ $webBooking->appends(request()->query())->nextPageUrl() }}">
+                                            <button style="padding: 6px 12px; margin-left: 5px; background-color: #ff79b1; color: white; border: none; border-radius: 4px;">❯</button>
+                                        </a>
+                                    @else
+                                        <button disabled style="padding: 6px 12px; margin-left: 5px; background-color: #ccc; border: none; border-radius: 4px;">❯</button>
+                                    @endif
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -43,8 +61,8 @@
                         <th style="width: 10%">Check In</th>
                         <th style="width: 10%">Check Out</th>
                         <th style="width: 10%">Pax</th>
-                        <th style="width: 10%">Status Check In</th>
-                        <th style="width: 10%">Status Check Out</th>
+                        {{-- <th style="width: 10%">Status Check In</th>
+                        <th style="width: 10%">Status Check Out</th> --}}
                         <th style="width: 10%">See Details</th>
                     </tr>
                 </thead>
@@ -57,8 +75,8 @@
                             <td>{{ $item->check_in }}</td>
                             <td>{{ $item->check_out }}</td>
                             <td>{{ $item->adults }} Adult + {{ $item->child }} Child</td>
-                            <td>(belum)</td>
-                            <td>(belum)</td>
+                            {{-- <td>(belum)</td>
+                            <td>(belum)</td> --}}
                             <td>
                                 <a href="{{ url('/bookingandreservation/accommodation/'.$item->id) }}"><u>See Details</u></a>
                             </td>

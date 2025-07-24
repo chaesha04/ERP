@@ -169,8 +169,8 @@
             <td class="pink">Place</td>
         </tr>
         <tr>
-            <td colspan="5">
-                <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+            <td colspan="5" style="vertical-align: top; padding: 0;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin: 0; padding: 0; border: 0px solid #000;">
                     <thead>
                         <tr style="background-color: #eac2c5;">
                             <th>Product</th>
@@ -193,13 +193,13 @@
                     </tbody>
                 </table>
             </td>
-            <td colspan="5">
-                <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+            <td colspan="5" style="vertical-align: top; padding: 0;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin: 0; padding: 0;border: 0px solid #000;">
                     <tbody>
                         @foreach($event as $row)
                         <tr>
-                            <td style="width: 20%; ">{{ $row['date'] }}</td>
-                            <td style="width: 20%; ">{{ $row['start'] }} - {{ $row['end'] }}</td>
+                            <td style="width: 20%;">{{ $row['date'] }}</td>
+                            <td style="width: 20%;">{{ $row['start'] }} - {{ $row['end'] }}</td>
                             <td style="width: 40%; text-align: right;">{{ $row['activities'] }}</td>
                             <td style="width: 20%; text-align: right;">{{ $row['place'] }}</td>
                         </tr>
@@ -207,6 +207,7 @@
                     </tbody>
                 </table>
             </td>
+        </tr>
           <tr>
             <td colspan="5" class="pink">HOUSE KEEPING HOTEL</td>
             <td colspan="5" class="pink"></td>

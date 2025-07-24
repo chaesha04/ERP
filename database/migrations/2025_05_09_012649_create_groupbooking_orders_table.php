@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ProductAccomodation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +21,7 @@ return new class extends Migration
             $table->date('check_out');
             $table->string('event_type');
             $table->unsignedBigInteger('hotel_id');
-            $table->foreign('hotel_id')->references('id')->on('product_accomodations')->onDelete('cascade');   
+            $table->foreign('hotel_id')->references('id')->on('product_accomodations');   
             $table->integer('qty_room'); 
             $table->integer('extrabed'); 
             $table->integer('adult'); 

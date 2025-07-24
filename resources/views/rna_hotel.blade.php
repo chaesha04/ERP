@@ -51,7 +51,7 @@
             <h1 onclick="rna()" style="padding-top: 10px;">{{ $hotel->hotel_name }}</h1>
             <hr style="border: none; border-top: 2px solid #a3a3a3; width: 100%; margin: 0; padding: 0;">
             <p style="color: #a3a3a3; margin: 0; padding: 0;">All Total</p>
-            <table class="data">
+            <table class="data" >
                 <tr>
                     <th>Product</th>
                     <th>Total Pax</th>

@@ -37,8 +37,7 @@
         <div class="settings">
             <x-navlink-sales />
             <br><br>
-            <h2><a href="/bookingandreservation/groupbookingorder">Edit Visitor Detail</a></h2>
-            <h2><a href="/bookingandreservation/groupbookingorder">Edit Hotel Detail - {{ $groupbooking->slug }}</a></h2>
+            <h2><a href="/bookingandreservation/groupbookingorder">Edit Visitor Detail - {{ $groupbooking->slug }}</a></h2>
 
             <form method="POST" action="{{ url('/bookingandreservation/groupbookingorder/' . $groupbooking->id . '/visitoredit') }}">
                 @csrf
@@ -61,7 +60,6 @@
                             </td>
                             <td>
                                 <select name="sex">
-                                    <option value="">-- Select --</option>
                                     <option value="Male" {{ (old('sex', $groupbooking->VisitorDetail->sex) == 'Male') ? 'selected' : '' }}>Male</option>
                                     <option value="Female" {{ (old('sex', $groupbooking->VisitorDetail->sex) == 'Female') ? 'selected' : '' }}>Female</option>
                                 </select>

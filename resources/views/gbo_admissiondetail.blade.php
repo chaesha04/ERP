@@ -207,8 +207,7 @@
             <table class="navlinkgbo">
                 <thead>
                     <tr>
-                        <td><a href="/bookingandreservation/groupbookingorder/{{$groupbooking->id}}/add_note">Add Note (BEO)</a></td>
-                        <td><a href="#">Edit Note (BEO)</a></td>
+                        <td><a href="/bookingandreservation/groupbookingorder/{{$groupbooking->id}}/add_note">Add/Edit Note (BEO)</a></td>
                     </tr>
                 </thead>
             </table>

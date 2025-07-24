@@ -34,31 +34,29 @@ class StatusFrontOfficeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'booking_id' => 'required|integer',
-            'check_in' => 'nullable|date',
-            'check_out' => 'nullable|date',
-        ]);
+        {
+            $validated = $request->validate([
+                'booking_id' => 'required|exists:bookings,id',
+                'check_in' => 'nullable|date',
+                'check_out' => 'nullable|date',
+            ]);
 
-        $data = [];
+            // Cek apakah data untuk booking_id sudah ada
+            $status = StatusFrontOffice::firstOrNew(['booking_id' => $validated['booking_id']]);
 
-        if ($request->has('check_in')) {
-            $data['check_in'] = $request->check_in;
+            // Update nilai yang dikirim (bisa salah satu atau dua-duanya)
+            if (isset($validated['check_in'])) {
+                $status->check_in = $validated['check_in'];
+            }
+
+            if (isset($validated['check_out'])) {
+                $status->check_out = $validated['check_out'];
+            }
+
+            $status->save();
+
+            return response()->json(['message' => 'Status updated successfully.']);
         }
-
-        if ($request->has('check_out')) {
-            $data['check_out'] = $request->check_out;
-        }
-
-        // update jika sudah ada, atau create baru
-        StatusFrontOffice::updateOrCreate(
-            ['booking_id' => $request->booking_id],
-            $data
-        );
-
-        return response()->json(['message' => 'Status berhasil disimpan']);
-    }
 
     /**
      * Display the specified resource.

@@ -17,7 +17,8 @@
                         }
                     </script>
                 </tr>
-            </table><br>
+            </table
+            >
             <div class="form-customer">
                 <table style="width:100%">
                     <tr>
@@ -27,7 +28,7 @@
                                     <option value="hotel_name" {{ request('field') == 'hotel_name' ? 'selected' : '' }}>Hotel Name</option>
                                     <option value="group_name" {{ request('field') == 'group_name' ? 'selected' : '' }}>Group Name</option>
                                     <option value="sales_name" {{ request('field') == 'sales_name' ? 'selected' : '' }}>Sales Name</option>
-                                    <option value="id" {{ request('field') == 'id' ? 'selected' : '' }}>Booking ID</option>
+                                    <option value="slug" {{ request('field') == 'slug' ? 'selected' : '' }}>Booking ID</option>
                                 </select>
 
                                 <input type="text" name="keyword" placeholder="Search Group Booking" value="{{ request('keyword') }}">
@@ -35,8 +36,25 @@
                                 <button><a href="/bookingandreservation/groupbookingorder">Cancel</a></button>
                             </form>
                         </td>
-                        <td>
-                            <p style="text-align:right; color: #6e6e6e;">{{ $groupbookings->count() }} Visitor Data | Page {{ $groupbookings->currentPage() }} of {{ $groupbookings->lastPage() }}</p>
+                         <td>
+                            <p style="text-align:right; color: #6e6e6e; margin-bottom: 0;">{{ $groupbookings->count() }} Reservation Via Website Data | Page {{ $groupbookings->currentPage() }} of {{ $groupbookings->lastPage() }}</p>
+                            <div class="" style="text-align: right;">
+                                    @if ($groupbookings->onFirstPage())
+                                        <button disabled style="padding: 6px 12px; margin-right: 5px; background-color: #ccc; border: none; border-radius: 4px;">❮</button>
+                                    @else
+                                        <a href="{{ $groupbookings->appends(request()->query())->previousPageUrl() }}">
+                                            <button style="padding: 6px 12px; margin-right: 5px; background-color: #ff79b1; color: white; border: none; border-radius: 4px;">❮</button>
+                                        </a>
+                                    @endif
+
+                                    @if ($groupbookings->hasMorePages())
+                                        <a href="{{ $groupbookings->appends(request()->query())->nextPageUrl() }}">
+                                            <button style="padding: 6px 12px; margin-left: 5px; background-color: #ff79b1; color: white; border: none; border-radius: 4px;">❯</button>
+                                        </a>
+                                    @else
+                                        <button disabled style="padding: 6px 12px; margin-left: 5px; background-color: #ccc; border: none; border-radius: 4px;">❯</button>
+                                    @endif
+                            </div>
                         </td>
                     </tr>
                 </table>

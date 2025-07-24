@@ -24,7 +24,7 @@ class HomeController extends Controller
         });
 
         return view('home', [
-            'title' => 'Group Booking Calendar',
+            'title' => 'Dashboard',
             'events' => $events,
         ]);
     }

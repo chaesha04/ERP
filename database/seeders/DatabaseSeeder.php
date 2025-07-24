@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
             EventBeoSeeder::class,
             BreakdownBeoSeeder::class,
             BookingSeeder::class,
+            BeachTicketERPSeeder::class,
         ]);
     }
 }

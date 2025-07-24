@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('booking_id')->constrained('bookings');
-            $table->dateTime('check_in');
-            $table->dateTime('check_out');
+            $table->dateTime('check_in')->nullable();
+            $table->dateTime('check_out')->nullable();
         });
     }
 

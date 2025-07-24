@@ -9,7 +9,7 @@
                 <tr>
                     <td>Group Booking ID</td>
                     <td>:</td>
-                    <td>{{ $groupbooking->id }}</td>
+                    <td>{{ $groupbooking->slug }}</td>
                 </tr>
                 <tr>
                     <td>Group/Company Name</td>
@@ -19,7 +19,7 @@
                 <tr>
                     <td>Check In - Check Out</td>
                     <td>:</td>
-                    <td>{{ $groupbooking->check_in }} - {{ $groupbooking->check_out }}</td>
+                    <td>{{ $groupbooking->check_in }} until {{ $groupbooking->check_out }}</td>
                 </tr>
             </table>
             <br>

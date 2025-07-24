@@ -2,68 +2,71 @@
 
 namespace Database\Seeders;
 
-use App\Models\Employee;
-use App\Models\VisitorDetail;
 use Illuminate\Database\Seeder;
 use App\Models\GroupbookingOrder;
-use App\Models\ProductAccomodation;
+use Illuminate\Support\Str;
 
-class GroupbookingOrderSeeder extends Seeder
+class GroupBookingOrderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // GroupbookingOrder::create([
-        //     'check_in'           => '2025-06-01',
-        //     'check_out'          => '2025-06-02',
-        //     'event_type'         => 'Gathering',
-        //     'hotel_id'           => ProductAccomodation::inRandomOrder()->first()->id,
-        //     'qty_room'           => 20,
-        //     'extrabed'           => 10,
-        //     'adult'              => 41,
-        //     'child'              => 10,
-        //     'baby'               => 4,
-        //     'night'              => 1,
-        //     'rate_desc'          => 'Fullboard Package',
-        //     'package'            => 'fullboard Package',
-        //     'single_room'        => '0', //revisi key, jadinya product dipecah jadi single,twin, sama triple
-        //     'twin_room'          => '26', //revisi key, jadinya product dipecah jadi single,twin, sama triple
-        //     'triple_room'        => '15', //revisi key, jadinya product dipecah jadi single,twin, sama triple
-        //     'child_room'         => '10', //revisi key, jadinya product dipecah jadi single,twin, sama triple
-        //     'singleroom_price'   => 0,
-        //     'twinroom_price'     => 750000,
-        //     'tripleroom_price'   => 700000,
-        //     'childroom_price'    => 375000,
-        //     'deposit'            => 15000000,
-        //     'sales_id'           => Employee::inRandomOrder()->first()->id, // ganti sesuai data yang ada
-        //     'group_id'           => VisitorDetail::inRandomOrder()->first()->id, // ganti sesuai data yang ada
-        // ]);
-        // GroupbookingOrder::create([
-        //     'check_in'           => '2025-06-02',
-        //     'check_out'          => '2025-06-04',
-        //     'event_type'         => 'Gathering',
-        //     'hotel_id'           => ProductAccomodation::inRandomOrder()->first()->id,
-        //     'qty_room'           => 15,
-        //     'extrabed'           => 10,
-        //     'adult'              => 40,
-        //     'child'              => 0,
-        //     'baby'               => 3,
-        //     'night'              => 1,
-        //     'rate_desc'          => 'Fullboard Package',
-        //     'package'            => 'fullboard Package',
-        //     'single_room'        => '0', //revisi key, jadinya product dipecah jadi single,twin, sama triple
-        //     'twin_room'          => '0', //revisi key, jadinya product dipecah jadi single,twin, sama triple
-        //     'triple_room'        => '10', //revisi key, jadinya product dipecah jadi single,twin, sama triple
-        //     'child_room'         => '0', //revisi key, jadinya product dipecah jadi single,twin, sama triple
-        //     'singleroom_price'   => 0,
-        //     'twinroom_price'     => 0,
-        //     'tripleroom_price'   => 700000,
-        //     'childroom_price'    => 0,
-        //     'deposit'            => 10000000,
-        //     'sales_id'           => Employee::inRandomOrder()->first()->id, // ganti sesuai data yang ada
-        //     'group_id'           => VisitorDetail::inRandomOrder()->first()->id, // ganti sesuai data yang ada
-        // ]);
+        $faker = \Faker\Factory::create();
+
+        // Harga tetap
+        $singlePrice = 700000;
+        $twinPrice = 650000;
+        $triplePrice = 600000;
+
+        for ($i = 0; $i < 50; $i++) {
+            $checkIn = $faker->dateTimeBetween('+1 days', '+3 months');
+            $night = $faker->numberBetween(1, 5);
+            $checkOut = (clone $checkIn)->modify("+{$night} days");
+
+            // Jumlah kamar
+            $singleRoom = $faker->numberBetween(1, 5);
+            $twinRoom = $faker->numberBetween(20, 50);
+            $tripleRoom = $faker->numberBetween(20, 60);
+            $childRoom = $faker->numberBetween(0, 20);
+            $childPrice = $faker->randomElement([300000, 350000]);
+
+            // Hitung total
+            $grandTotal = (
+                $singleRoom * $singlePrice +
+                $twinRoom * $twinPrice +
+                $tripleRoom * $triplePrice +
+                $childRoom * $childPrice
+            ) * $night;
+
+            GroupbookingOrder::create([
+                'slug' => Str::slug($faker->unique()->sentence(3) . '-' . $i),
+                'check_in' => $checkIn->format('Y-m-d'),
+                'check_out' => $checkOut->format('Y-m-d'),
+                'event_type' => $faker->randomElement(['Wedding', 'Meeting', 'Training', 'Gathering']),
+                'hotel_id' => $faker->numberBetween(1, 4),
+                'qty_room' => $singleRoom + $twinRoom + $tripleRoom + $childRoom,
+                'extrabed' => $faker->numberBetween(0, 10),
+                'adult' => $faker->numberBetween(10, 100),
+                'child' => $faker->numberBetween(0, 50),
+                'baby' => $faker->numberBetween(0, 10),
+                'night' => $night,
+                'rate_desc' => $faker->randomElement(['Corporate Rate', 'Family Rate', 'Seasonal Rate']),
+                'package' => $faker->randomElement(['Fullboard', 'Halfboard', 'Room Only']),
+                'single_room' => $singleRoom,
+                'twin_room' => $twinRoom,
+                'triple_room' => $tripleRoom,
+                'child_room' => $childRoom,
+                'singleroom_price' => $singlePrice,
+                'twinroom_price' => $twinPrice,
+                'tripleroom_price' => $triplePrice,
+                'childroom_price' => $childPrice,
+                'grand_total' => $grandTotal,
+                'deposit' => $faker->numberBetween(intval($grandTotal * 0.1), intval($grandTotal * 0.5)),
+                'sales_id' => 1,
+                'group_id' => $faker->numberBetween(1, 100),
+            ]);
+        }
     }
 }

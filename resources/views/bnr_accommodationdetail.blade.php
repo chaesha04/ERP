@@ -41,7 +41,7 @@
                 </table>
             </div>
             <div class="table-data" style="border: 2px solid rgb(155, 155, 155); padding: 10px; border-radius:5px;">
-                <table class="data" style="margin-top:20px;">
+                {{-- <table class="data" style="margin-top:20px;">
                     <thead class="table-dark">
                         <tr>
                             <th colspan="6">CHECK IN & CHECK OUT</th>
@@ -68,7 +68,7 @@
                             <td id="check_out-time"></td>
                         </tr>
                     </tbody>
-                </table>
+                </table> --}}
                 <table style="width: 100%; margin-top:20px;">
                     <tr>
                         <td>
@@ -124,37 +124,4 @@
     function Cancel(id){
         window.location.href = '/bookingandreservation/accommodation';
     } 
-    function handleCheck(type, bookingId) {
-    const checkbox = document.getElementById(`${type}-box`);
-    const timeCell = document.getElementById(`${type}-time`);
-
-    if (checkbox.checked) {
-        const now = new Date();
-        const iso = now.toISOString();
-        const local = now.toLocaleString();
-
-        timeCell.innerText = local;
-
-        fetch("/bookingandreservation/accommodation/statusfrontoffice/store", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                booking_id: bookingId,
-                [type]: iso
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data.message);
-        })
-        .catch(error => {
-            alert("Gagal menyimpan status: " + error);
-        });
-    } else {
-        timeCell.innerText = ''; // hapus waktu di tampilan kalau uncheck
-    }
-}
 </script>

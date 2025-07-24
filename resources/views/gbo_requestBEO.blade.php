@@ -2,37 +2,23 @@
     <x-slot:title>Add New | Group Booking (Step 2)</x-slot:title>
     <main>
         <style>
-            input {
-                display: flex;
-                justify-content: right;
-                align-items: left;
+            textarea {
+                padding-bottom: 50px;
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-top: 15px;
+                border-radius: 6px;
+                border: 1px solid #ccc;
+                width: 100%;
+                box-sizing: border-box;
+                font-size: 14px;
+                transition: border 0.2s ease;
                 vertical-align: top;
+                resize: vertical;
             }
-            
-            /* input[type="time"] {
-                text-align: right;
-                width: 90%;
-                color: #414141;
-                } */
-                /* 
-                input[type="date"],
-                input[type="time"], */
-                input[type="text"],
-                select {
-                    padding: 50px 10px;
-                    border-radius: 6px;
-                    border: 1px solid #ccc;
-                    width: 100%;
-                    box-sizing: border-box;
-                    font-size: 14px;
-                    transition: border 0.2s ease;
-                    vertical-align: top;
-                }
-                
-                input:focus,
-                select:focus {
-                    vertical-align: top;
-                    outline: none;
+
+            textarea:focus {
+                outline: none;
                 border-color: #007BFF;
                 box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
             }
@@ -65,15 +51,17 @@
                 padding: 10px;
             }
 
-            .styled-button{
-                padding:5px;
-            }            
-            .styled-button:hover{
-                background-color:rgb(176, 225, 176);
-                color:black;
-                padding:5px;
+            .styled-button {
+                padding: 5px;
+                font-weight: bold;
             }
-        
+
+            .styled-button:hover {
+                background-color: #d4e9ff;
+                color: black;
+                padding: 5px;
+                font-weight: bold;
+            }
 
             .submit {
                 margin-top: 20px;
@@ -85,7 +73,7 @@
                 <tr>
                     <td>Group Booking ID</td>
                     <td>:</td>
-                    <td>{{ $groupbooking->id }}</td>
+                    <td>{{ $groupbooking->slug }}</td>
                 </tr>
                 <tr>
                     <td>Group/Company Name</td>
@@ -95,53 +83,72 @@
                 <tr>
                     <td>Check In - Check Out</td>
                     <td>:</td>
-                    <td>{{ $groupbooking->check_in }} - {{ $groupbooking->check_out }}</td>
+                    <td>{{ $groupbooking->check_in }} until {{ $groupbooking->check_out }}</td>
                 </tr>
             </table>
 
-            <form action="" method="POST">
+            <form action="{{ url()->current() }}" method="POST">
+
                 @csrf
                 <input type="hidden" name="gb_id" value="{{ $groupbooking->id }}">
-                
+
                 <!-- Note Section -->
-                <table>
+                <table style="border: 1px solid #333;">
                     <tr>
-                        <th colspan="4" style="background-color:rgb(176, 225, 176); color: black;">NOTE FOR STAFF AND TEAM</th>
+                        <th colspan="4" style="background-color: #d4e9ff; color: black; border: 1px solid #333;">NOTE FOR STAFF AND TEAM</th>
                     </tr>
                     <tr>
-                        <th>Housekeeping</th>
-                        <th>Engineer</th>
-                        <th>Accounting</th>
-                        <th>Kitchen</th>
+                        <th style="border: 1px solid #333;">Housekeeping</th>
+                        <th style="border: 1px solid #333;">Engineer</th>
+                        <th style="border: 1px solid #333;">Kitchen</th>
+                        <th style="border: 1px solid #333;">FnB</th>
                     </tr>
                     <tr>
-                        <td><input type="text" name="note_housekeeping" id="note_housekeeping" required></td>
-                        <td><input type="text" name="note_engineer" id="note_engineer" required></td>
-                        <td><input type="text" name="note_accounting" id="note_accounting" required></td>
-                        <td><input type="text" name="note_kitchen" id="note_kitchen" required></td>                    
+                        <td style="border: 1px solid #333;">
+                            <textarea required name="note_housekeeping" id="note_housekeeping" rows="3">{{ $noteBEO->note_housekeeping ?? '' }}</textarea>
+                        </td>
+                        <td style="border: 1px solid #333;">
+                            <textarea required name="note_engineer" id="note_engineer" rows="3">{{ $noteBEO->note_engineer ?? '' }}</textarea>
+                        </td>
+                        <td style="border: 1px solid #333;">
+                            <textarea required name="note_kitchen" id="note_kitchen" rows="3">{{ $noteBEO->note_kitchen ?? '' }}</textarea>
+                        </td>
+                        <td style="border: 1px solid #333;">
+                            <textarea required name="note_fnb" id="note_fnb" rows="3">{{ $noteBEO->note_fnb ?? '' }}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <th>Sport</th>
-                        <th>FnB</th>
-                        <th>Lalassa</th>
-                        <th></th>
+                        <th style="border: 1px solid #333;">Sport</th>
+                        <th style="border: 1px solid #333;">Accounting</th>
+                        <th style="border: 1px solid #333;">Lalassa</th>
+                        <th style="border: 1px solid #333;"></th>
                     </tr>
                     <tr>
-                        <td><input required type="text" name="note_sport" id="note_sport"></td>
-                        <td><input required type="text" name="note_fnb" id="note_fnb"></td>
-                        <td><input required type="text" name="note_lalassa" id="note_lalassa"></td>
+                        <td style="border: 1px solid #333;">
+                            <textarea required name="note_sport" id="note_sport" rows="3">{{ $noteBEO->note_sport ?? '' }}</textarea>
+                        </td>
+                        <td style="border: 1px solid #333;">
+                            <textarea required name="note_accounting" id="note_accounting" rows="3">{{ $noteBEO->note_accounting ?? '' }}</textarea>
+                        </td>
+                        <td style="border: 1px solid #333;">
+                            <textarea required name="note_lalassa" id="note_lalassa" rows="3">{{ $noteBEO->note_lalassa ?? '' }}</textarea>
+                        </td>
+                        <td style="border: 1px solid #333;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div class="submit" style="display:flex; justify-content:center; align-items: center; gap: 10px;">
+                                <button type="button" onclick="window.history.back()" class="styled-button" style="padding: 10px; cursor: pointer;">Cancel</button>
+                                <button type="submit" class="styled-button" style="padding: 10px; cursor: pointer;">Submit</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
                         <td></td>
                     </tr>
                 </table>
                 <br>
-
-
-                <!-- Submit -->
-                <div class="submit" style="display:flex; justify-content:center; align-items: center;">
-                    <button type="submit" class="styled-button" style="padding: 10px;">Submit</button>
-                </div>
             </form>
         </div>
     </main>
 </x-layout-sales>
-

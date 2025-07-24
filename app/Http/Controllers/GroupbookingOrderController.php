@@ -31,10 +31,12 @@ public function index(Request $request)
             $query->whereHas('SalesDetail', function($q) use ($keyword) {
                 $q->where('name', 'LIKE', "%$keyword%");
             });
+        } elseif($field == 'slug'){
+            $query->where('slug', $keyword);
         }
     }
 
-    $groupbookings = $query->paginate(25);
+    $groupbookings = $query->paginate(20);
 
     return view('groupbookingorder', compact('groupbookings'))->with('title', 'Group Booking List');
 }

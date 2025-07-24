@@ -158,43 +158,36 @@
                     </div>
                 </div>
             </div>
+            <div class="linechart" style="margin-left:30px;">
+                <div class="box-rna-hotel">
+                    <h2>Tanjung Lesung Resort: <br>Beach (Website)</h2>
+                    <div class="hotel-groupbox-coloumn">
+                        @forelse($beachData as $item)
+                            <div class="hotel-groupbox-row" onclick="hotelAnalysis({{ $item->id }})">
+                                <div class="hotel-name">
+                                    <p>
+                                        @php
+                                            $beachName = 'Unknown';
+                                            if ($item->id == 1) {
+                                                $beachName = 'Lalassa Beach Club';
+                                            } elseif ($item->id == 2) {
+                                                $beachName = 'Bodur Beach';
+                                            }
+                                        @endphp
+                                        {{ $beachName }}
+                                    </p>
+                                </div>
+                                <div class="hotel-data">
+                                    <p>{{ \App\Models\Booking::where('hotel_id', $item->id)->count() }}</p>
+                                </div>
+                            </div>
+                        @empty
+                            <p style="color:white;">No hotel data found.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
             <span></span>
-            {{-- <div class="piechart" style="width: 50%;">
-                <div class="box-rna-hotel">
-                    <h2>Tanjung Lesung Resort Group (dari azmi revisi)</h2>
-                    <div class="hotel-groupbox-coloumn">
-                        @forelse($hotels as $hotel)
-                            <div class="hotel-groupbox-row" onclick="hotelAnalysis({{ $hotel->id }})">
-                                <div class="hotel-name"><p>{{ $hotel->hotel_name }}</p></div>
-                                <div class="hotel-data">
-                                    <p>{{ \App\Models\GroupbookingOrder::where('hotel_id', $hotel->id)->count() }}</p>
-                                </div>
-                            </div>
-                        @empty
-                            <p style="color:white;">No hotel data found.</p>
-                        @endforelse
-
-                    </div>
-                </div>
-            </div> --}}
-            {{-- <div class="piechart">
-                <div class="box-rna-hotel">
-                    <h2>Beach </h2>
-                    <div class="hotel-groupbox-coloumn">
-                        @forelse($hotels as $hotel)
-                            <div class="hotel-groupbox-row" onclick="hotelAnalysis({{ $hotel->id }})">
-                                <div class="hotel-name"><p>{{ $hotel->hotel_name }}</p></div>
-                                <div class="hotel-data">
-                                    <p>{{ \App\Models\GroupbookingOrder::where('hotel_id', $hotel->id)->count() }}</p>
-                                </div>
-                            </div>
-                        @empty
-                            <p style="color:white;">No hotel data found.</p>
-                        @endforelse
-
-                    </div>
-                </div>
-            </div> --}}
         </div>
     </main>
     <script>

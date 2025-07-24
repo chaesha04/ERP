@@ -2,35 +2,50 @@
 
 namespace Database\Seeders;
 
-use App\Models\BreakdownBeo;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BreakdownBeoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
-        BreakdownBeo::create([
-            'product' => 'Lunch',
-            'price' => 50000,
-            'unit'=>50,
-            'night' => 1,
-            'total_price' => 2500000,
-            'gb_id'=> 1
-        ]);
-        BreakdownBeo::create([
-            'product' => 'Dinner',
-            'price' => 100000,
-            'unit'=>50,
-            'night' => 1,
-            'total_price' => 5000000,
-            'gb_id'=> 1
-        ]);
+        $faker = \Faker\Factory::create();
 
+        $products = [
+            'Welcome Drink',
+            'Breakfast',
+            'Breakfast Children',
+            'Lunch',
+            'Lunch Children',
+            'Dinner',
+            'Dinner Children',
+        ];
+
+        $fixedPrices = [50000, 100000, 150000, 250000];
+
+        for ($gbId = 1; $gbId <= 50; $gbId++) {
+            $usedProducts = $faker->randomElements($products, $faker->numberBetween(1, count($products)));
+
+            foreach ($usedProducts as $product) {
+                $price = $faker->randomElement($fixedPrices);    // pilih dari harga tetap
+                $unit = $faker->numberBetween(10, 100);          // pax
+                $night = $faker->numberBetween(1, 3);            // malam
+                $total = $price * $unit * $night;
+
+                DB::table('breakdown_beos')->insert([
+                    'product' => $product,
+                    'price' => $price,
+                    'unit' => $unit,
+                    'night' => $night,
+                    'total_price' => $total,
+                    'gb_id' => $gbId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
     }
 }

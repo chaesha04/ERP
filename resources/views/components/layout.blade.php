@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="{{ asset('logotj.png') }}" type="image/png">
     <meta charset="UTF-8">
     <title>{{ $title ?? 'Default Title' }}</title>
     <style>
@@ -387,10 +388,7 @@
             .form-customer input{
                 text-align:left;
                 align-content: left;
-            }   
-
-
-            
+            }         
     </style>
 </head>
 <body>

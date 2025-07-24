@@ -9,7 +9,7 @@
                 <tr>
                     <td>Group Booking ID</td>
                     <td>:</td>
-                    <td>{{ $groupbooking->id }}</td>
+                    <td>{{ $groupbooking->slug }}</td>
                 </tr>
                 <tr>
                     <td>Group/Company Name</td>

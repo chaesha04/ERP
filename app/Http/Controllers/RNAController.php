@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Models\GroupbookingOrder;
+use App\Models\TicketOrder;
 use Illuminate\Support\Facades\DB;
 
 class RNAController extends Controller
@@ -45,6 +47,11 @@ class RNAController extends Controller
         $orders = GroupbookingOrder::with('ProductDetail')->get();
         $hotels = $orders->pluck('ProductDetail')->filter()->unique('id');
         
+        $beachDatas = TicketOrder::all();
+        $uniqueHotelIds = $beachDatas->pluck('beach_ticket_id')->unique()->filter();
+
+        $beachData = TicketOrder::whereIn('id', $uniqueHotelIds)->get();
+
         // coba liat, di return itu yg di dalam petik buat di blade
         // misalkan disini 'title' berari di blade $title
 
@@ -54,7 +61,8 @@ class RNAController extends Controller
             'data' => $pieData,
             'lineLabels' => $lineLabels,
             'lineData' => $lineData,
-            'hotels' => $hotels
+            'hotels' => $hotels,
+            'beachData' => $beachData
             
         ]);
     }
