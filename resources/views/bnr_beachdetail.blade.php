@@ -6,7 +6,7 @@
                 <table class="data">
                     <thead>
                         <tr>
-                            <td colspan="5" style="text-align: left; font-size: 40px; background-color: transparent;">[{{ $seedetail->id }}] - {{ $seedetail->customer_name }} </td>
+                            <td colspan="5" style="text-align: left; font-size: 40px; background-color: transparent;">[{{ $seedetail->order_code }}] - {{ $seedetail->customer_name }} </td>
                         </tr>
                         <tr>
                         <td colspan="5" style="text-align: left;background-color: transparent;">

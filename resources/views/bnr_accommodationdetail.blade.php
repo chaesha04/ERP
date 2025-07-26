@@ -6,14 +6,12 @@
                 <table class="data">
                     <thead>
                         <tr>
-                            <td colspan="5" style="text-align: left; font-size: 40px; background-color: transparent;">[{{ $seedetail->id }}] - {{ $seedetail->first_name }} {{ $seedetail->last_name }}  </td>
+                            <td colspan="5" style="text-align: left; font-size: 40px; background-color: transparent;">[{{ $seedetail->code }}] - {{ $seedetail->first_name }} {{ $seedetail->last_name }}  </td>
                         </tr>
                         <tr>
                         <td colspan="5" style="text-align: left;background-color: transparent;">
                             <div class="form-customer">
                                     <button onclick="Cancel({{ $seedetail->id }})">Cancel</button>
-                                    {{-- <button onclick="editProductAccommodation({{ $seedetail->id }})">Edit Product</button>
-                                    <button onclick="deleteProductAccommodation({{ $seedetail->id }})">Delete Product</button> --}}
                                 </a>
                             </div>
                         </td>
@@ -30,7 +28,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ $seedetail->id }}</td>
+                            <td>{{ $seedetail->hotel_id }}</td>
                             <td>{{ $seedetail->rooms_id }}</td>
                             <td>{{ $seedetail->check_in }}</td>
                             <td>{{ $seedetail->check_out }}</td>

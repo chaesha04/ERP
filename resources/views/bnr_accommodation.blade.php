@@ -16,7 +16,8 @@
                         <td style="width: 50%">
                             <form method="GET" action="/bookingandreservation/accommodation">
                                 <select name="field">
-                                    <option value="hotel_id" {{ request('field') == 'hotel_id' ? 'selected' : '' }}>Hotel Name</option>
+                                    <option value="code" {{ request('field') == 'code' ? 'selected' : '' }}>Booking Code</option>
+                                    <option value="hotel_id" {{ request('field') == 'hotel_id' ? 'selected' : '' }}>Hotel ID</option>
                                     <option value="room_id" {{ request('field') == 'room_id' ? 'selected' : '' }}>Room Type</option>
                                     <option value="first_name" {{ request('field') == 'first_name' ? 'selected' : '' }}>Customer First Name</option>
                                     <option value="last_name" {{ request('field') == 'last_name' ? 'selected' : '' }}>Customer Last Name</option>
@@ -55,8 +56,8 @@
             <table class="data">
                 <thead>
                     <tr>
-                        <th style="width: 10%">Booking ID</th>
-                        <th style="width: 10%">Hotel Name</th>
+                        <th style="width: 10%">Booking Code</th>
+                        <th style="width: 10%">Hotel ID</th>
                         <th style="width: 10%">Customer Name</th>
                         <th style="width: 10%">Check In</th>
                         <th style="width: 10%">Check Out</th>
@@ -69,7 +70,7 @@
                 <tbody>
                     @forelse ($webBooking as $item)
                         <tr>
-                            <td>{{ $item->id }}</td>
+                            <td>{{ $item->code }}</td>
                             <td>{{ $item->hotel_id }}</td>
                             <td>{{ $item->first_name }} {{ $item->last_name }}</td>
                             <td>{{ $item->check_in }}</td>

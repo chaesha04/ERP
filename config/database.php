@@ -78,6 +78,20 @@ return [
             ]) : [],
         ],
 
+            'hotelwebapp2' => [ // koneksi kedua dari Azmi
+            'driver' => 'mysql',
+            'host' => env('BOOKINGENGINE_DB_HOST', '127.0.0.1'),
+            'port' => env('BOOKINGENGINE_DB_PORT', '3306'),
+            'database' => env('BOOKINGENGINE_DB_DATABASE', 'hotelwebapp'),
+            'username' => env('BOOKINGENGINE_DB_USERNAME', 'root'),
+            'password' => env('BOOKINGENGINE_DB_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
