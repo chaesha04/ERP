@@ -396,7 +396,9 @@
         <ul>
             <li class="left"><a href="/" class="arrow-hover">Home</a></li>
             <li class="dropdown">
-                <a href="#">{{ auth()->user()->name }} <img src="icon-user.png" alt=""></a>
+                @auth('employee')
+    <a href="#">{{ auth('employee')->user()->name }} <img src="icon-user.png" alt=""></a>
+@endauth
                 <div class="dropdown-content">
                     <a href="/settings">Profile</a>
                     <a href="/logout">Logout</a>

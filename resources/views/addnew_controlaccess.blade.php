@@ -1,3 +1,8 @@
+@if(session('error'))
+    <div style="background-color: #fdd; padding: 10px; margin-bottom: 10px; border: 1px solid #f99;">
+        {{ session('error') }}
+    </div>
+@endif
 <x-layout>
     <x-slot:title>{{ $title }}</x-slot:title>
     <head>

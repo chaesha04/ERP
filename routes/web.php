@@ -41,8 +41,10 @@ use App\Http\Controllers\ProductActivityController;
 use App\Http\Controllers\GroupbookingOrderController;
 use App\Http\Controllers\GroupBookingDetailController;
 use App\Http\Controllers\ProductMeetingRoomController;
-use App\Http\Controllers\ProductAccomodationController;
+use App\Http\Controllers\ProductAccomodationController; 
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatusFrontOfficeController;
+use App\Http\Middleware\RoleAccessMiddleware;
 use App\Models\Banqueteventorder;
 use App\Models\HotelDetail;
 
@@ -61,11 +63,22 @@ Route::get('/login',[AuthController::class, 'login'])->name('login');
 Route::post('/login',[AuthController::class, 'authenticating']);
 Route::get('/logout',[AuthController::class, 'logout']);
 
-Route::middleware('auth')->group((function(){
+// Route akses ditolak
+Route::get('/access-denied', function () {
+    return view('access-denied'); // resources/views/access-denied.blade.php
+})->name('access.denied');
+
+
+Route::middleware(['auth:employee'])->group(function () {
     
     Route::get('/', [HomeController::class, 'showCalendar']);
     
-    Route::get('/salesmodule', [SalesModuleController::class, 'showGroupBooking', 'showCalendar']);
+    // ✅ Hanya role: Sales Admin yang boleh akses modul sales
+    Route::middleware('role.access:Sales Admin')->group(function () {
+
+        // Jika ingin membatasi akses ini hanya untuk Sales Admin juga:
+        Route::get('/salesmodule', [SalesModuleController::class, 'showGroupBooking', 'showCalendar']);
+    });
     
     
     Route::get('/reportingandanalytics', [RNAController::class, 'showRoomChart']);
@@ -130,9 +143,128 @@ Route::middleware('auth')->group((function(){
     Route::get('/groupbooking/pdf/banqueteventorder/{id}', [BanquetEventOrderPDF::class, 'show'])->name('generate-beo');
 
     Route::get('/groupbooking/pdf/guaranteeletter/{id}', [GuaranteeLetterPDF::class, 'show'])->name('generate-guaranteeletter');
+
+    Route::get('/bookingandreservation/groupbookingorder', [GroupbookingOrderController::class, 'index'])->name('groupbookingorder.index');
+
+
+    Route::delete('/bookingandreservation/groupbookingorder/{id}', [GroupBookingOrderController::class, 'destroy'])->name('destroy');
+
+
+    Route::get('/bookingandreservation/groupbookingorder/{id}/edit', [GroupbookingOrderController::class, 'editHotelDetail']);
+    Route::put('/bookingandreservation/groupbookingorder/{id}/edit', [GroupbookingOrderController::class, 'updateHotelDetail']);
+
+    Route::get('/bookingandreservation/groupbookingorder/{id}/visitoredit', [GroupbookingOrderController::class, 'editVisitorDetail']);
+    Route::put('/bookingandreservation/groupbookingorder/{id}/visitoredit', [GroupbookingOrderController::class, 'updateVisitorDetail']);
+
+    Route::get('/bookingandreservation/groupbookingorder/{id}', [GroupbookingOrderController::class, 'show']);
+    Route::get('/bookingandreservation/groupbookingorder/{id}/visitordetail', [GroupbookingOrderController::class, 'show_visitor']);
+    Route::get('/bookingandreservation/groupbookingorder/{id}/admissiondetail', [GroupbookingOrderController::class, 'show_admission']);
+
+    Route::post('/groupbookingorder/{id}/upload-document', [GroupbookingOrderController::class, 'uploadDocument'])->name('groupbookingorder.uploadDocument');
+
+
+    // Step 1: Form untuk input visitor detail
+    Route::get('/bookingandreservation/addnew_groupbooking/step1', function () {
+        $groupbookings = GroupbookingOrder::all();
+        return view('gb_addvisitordetail',compact('groupbookings'), ['title' => 'Group Booking | Booking and Reservation']);
+    });
+
+    Route::post('/groupbooking/step1', function (Illuminate\Http\Request $request) {
+        $validated = $request->validate([
+            'visitor_name' => 'required',
+            'group_name' => 'required',
+            'company_number' => '',
+            'phone_number' => 'required',
+            'country' => 'required',
+            'email' => '',
+            'group_address' => 'required',
+            'sex' => 'required',
+        ]);
+        
+        $visitor = VisitorDetail::create($validated);
+        
+        return redirect('/groupbooking/step2/' . $visitor->id);
+    });
+
+
+
+    // Step 2: Form untuk input hotel detail
+    Route::get('/groupbooking/step2/{visitor_id}', function ($visitor_id) {
+        $visitor = VisitorDetail::findOrFail($visitor_id);
+        $hotels = ProductAccomodation::all(); // ambil semua hotel
+        $sales_id = Employee::where('role','Sales Admin')->get(); // ambil semua hotel
+        
+        return view('gb_addnew', [
+            'visitor' => $visitor,
+            'hotels' => $hotels,
+            'sales_id' => $sales_id
+        ]);
+    });
+
+    Route::post('/groupbooking/step2', function (Request $request) {
+        $validated = $request->validate([
+            'visitor_id' => 'required|exists:visitor_details,id',
+            'hotel_id' => 'required|exists:product_accomodations,id',
+            'sales_id' => 'required|exists:employees,id',
+            'check_in' => 'required|date',
+            'check_out' => 'required|date|after_or_equal:check_in',
+            'event_type' => 'required|string',
+            'qty_room' => 'required|integer|min:0',
+            'extrabed' => 'nullable|integer|min:0',
+            'adult' => 'required|integer|min:0',
+            'child' => 'required|integer|min:0',
+            'baby' => 'nullable|integer|min:0',
+            'night' => 'required|integer|min:1',
+            'rate_desc' => 'nullable|string',
+            'package' => 'nullable|string',
+            'single_room' => 'nullable|integer|min:0',
+            'twin_room' => 'nullable|integer|min:0',
+            'triple_room' => 'nullable|integer|min:0',
+            'child_room' => 'nullable|integer|min:0',
+            'singleroom_price' => 'nullable|integer|min:0',
+            'twinroom_price' => 'nullable|integer|min:0',
+            'tripleroom_price' => 'nullable|integer|min:0',
+            'childroom_price' => 'nullable|integer|min:0',
+            'deposit' => 'nullable|integer|min:0',
+            'grand_total' => 'nullable|integer|min:0',
+        ]);
+
+        // Mapping ke kolom yang sesuai di DB
+        GroupBookingOrder::create([
+            'group_id' => $validated['visitor_id'], // Disimpan sebagai FK ke visitor
+            'hotel_id' => $validated['hotel_id'],
+            'sales_id' => $validated['sales_id'],
+            'check_in' => $validated['check_in'],
+            'check_out' => $validated['check_out'],
+            'event_type' => $validated['event_type'],
+            'qty_room' => $validated['qty_room'],
+            'extrabed' => $validated['extrabed'] ?? 0,
+            'adult' => $validated['adult'],
+            'child' => $validated['child'],
+            'baby' => $validated['baby'] ?? 0,
+            'night' => $validated['night'],
+            'rate_desc' => $validated['rate_desc'] ?? '',
+            'package' => $validated['package'] ?? '',
+            'single_room' => $validated['single_room'] ?? 0,
+            'twin_room' => $validated['twin_room'] ?? 0,
+            'triple_room' => $validated['triple_room'] ?? 0,
+            'child_room' => $validated['child_room'] ?? 0,
+            'singleroom_price' => $validated['singleroom_price'] ?? 0,
+            'twinroom_price' => $validated['twinroom_price'] ?? 0,
+            'tripleroom_price' => $validated['tripleroom_price'] ?? 0,
+            'childroom_price' => $validated['childroom_price'] ?? 0,
+            'deposit' => $validated['deposit'] ?? 0,
+            'grand_total' => $validated['grand_total'] ?? 0,
+        ]);
+        
+        return redirect('/bookingandreservation/groupbookingorder')->with('success', 'Group booking berhasil disimpan!');
+
+        
+    });
         
     
-    
+    // inventory
+    Route::middleware(['auth:employee', 'role.access:Inventory Admin'])->group(function () {
     Route::get('/product/accommodation', function () {
     $accomodations = ProductAccomodation::all(); // ambil data
     return view('accommodation', compact('accomodations' ),['title' => 'Product | Accomodation']);
@@ -289,26 +421,30 @@ Route::middleware('auth')->group((function(){
         return redirect('/product/watersport')->with('success', 'Employee added successfully');
     });
 
+
+    // Settings
+    Route::middleware(['auth:employee'])->group(function () {
+    // Settings Profile Page
     Route::get('/settings', function () {
         return view('settings', ['title' => 'Settings']);
     });
 
+    // Control Access Page - hanya bisa diakses oleh Super Admin
+    Route::middleware(['role.access:Super Admin'])->group(function () {
+        Route::get('/controlaccess', [SettingController::class, 'controlAccess'])->name('controlaccess');
+
     Route::get('/controlaccess', function () {
-        $controlaccess = Employee::all(); // ambil data
-        return view('controlaccess', compact('controlaccess' ),mergeData: ['title' => 'Control Access']); // kirim ke blade
+        $controlaccess = Employee::all();
+        return view('controlaccess', compact('controlaccess'), ['title' => 'Control Access']);
     });
 
     Route::get('/controlaccess/{employee}', [EmployeeController::class, 'show']);
-
     Route::delete('/controlaccess/{employee}', [EmployeeController::class, 'destroy']);
-
     Route::get('/addnew/controlaccess', function () {
-        return view('addnew_controlaccess', ['title' => 'Settings']);
+        return view('addnew_controlaccess', ['title' => 'Add Control Access']);
     });
-
     Route::get('/controlaccess/{id}/edit', [EmployeeController::class, 'edit']);
     Route::put('/controlaccess/{id}', [EmployeeController::class, 'update']);
-
 
     Route::post('/addnew/controlaccess', function (Request $request) {
         $validated = $request->validate([
@@ -324,129 +460,13 @@ Route::middleware('auth')->group((function(){
             'division' => $request->division,
             'email' => $request->email,
             'role' => $request->role,
-            'password' =>Hash::make($request->password),
+            'password' => Hash::make($request->password),
         ]);
-        
+
         return redirect('/controlaccess')->with('success', 'Employee added successfully');
     });
 
-    Route::get('/bookingandreservation/groupbookingorder', [GroupbookingOrderController::class, 'index'])->name('groupbookingorder.index');
-
-
-    Route::delete('/bookingandreservation/groupbookingorder/{id}', [GroupBookingOrderController::class, 'destroy'])->name('destroy');
-
-
-    Route::get('/bookingandreservation/groupbookingorder/{id}/edit', [GroupbookingOrderController::class, 'editHotelDetail']);
-    Route::put('/bookingandreservation/groupbookingorder/{id}/edit', [GroupbookingOrderController::class, 'updateHotelDetail']);
-
-    Route::get('/bookingandreservation/groupbookingorder/{id}/visitoredit', [GroupbookingOrderController::class, 'editVisitorDetail']);
-    Route::put('/bookingandreservation/groupbookingorder/{id}/visitoredit', [GroupbookingOrderController::class, 'updateVisitorDetail']);
-
-    Route::get('/bookingandreservation/groupbookingorder/{id}', [GroupbookingOrderController::class, 'show']);
-    Route::get('/bookingandreservation/groupbookingorder/{id}/visitordetail', [GroupbookingOrderController::class, 'show_visitor']);
-    Route::get('/bookingandreservation/groupbookingorder/{id}/admissiondetail', [GroupbookingOrderController::class, 'show_admission']);
-
-    Route::post('/groupbookingorder/{id}/upload-document', [GroupbookingOrderController::class, 'uploadDocument'])->name('groupbookingorder.uploadDocument');
-
-
-    // Step 1: Form untuk input visitor detail
-    Route::get('/bookingandreservation/addnew_groupbooking/step1', function () {
-        $groupbookings = GroupbookingOrder::all();
-        return view('gb_addvisitordetail',compact('groupbookings'), ['title' => 'Group Booking | Booking and Reservation']);
+});
     });
-
-    Route::post('/groupbooking/step1', function (Illuminate\Http\Request $request) {
-        $validated = $request->validate([
-            'visitor_name' => 'required',
-            'group_name' => 'required',
-            'company_number' => '',
-            'phone_number' => 'required',
-            'country' => 'required',
-            'email' => '',
-            'group_address' => 'required',
-            'sex' => 'required',
-        ]);
-        
-        $visitor = VisitorDetail::create($validated);
-        
-        return redirect('/groupbooking/step2/' . $visitor->id);
     });
-
-
-
-    // Step 2: Form untuk input hotel detail
-    Route::get('/groupbooking/step2/{visitor_id}', function ($visitor_id) {
-        $visitor = VisitorDetail::findOrFail($visitor_id);
-        $hotels = ProductAccomodation::all(); // ambil semua hotel
-        $sales_id = Employee::where('role','Sales Admin')->get(); // ambil semua hotel
-        
-        return view('gb_addnew', [
-            'visitor' => $visitor,
-            'hotels' => $hotels,
-            'sales_id' => $sales_id
-        ]);
-    });
-
-    Route::post('/groupbooking/step2', function (Request $request) {
-        $validated = $request->validate([
-            'visitor_id' => 'required|exists:visitor_details,id',
-            'hotel_id' => 'required|exists:product_accomodations,id',
-            'sales_id' => 'required|exists:employees,id',
-            'check_in' => 'required|date',
-            'check_out' => 'required|date|after_or_equal:check_in',
-            'event_type' => 'required|string',
-            'qty_room' => 'required|integer|min:0',
-            'extrabed' => 'nullable|integer|min:0',
-            'adult' => 'required|integer|min:0',
-            'child' => 'required|integer|min:0',
-            'baby' => 'nullable|integer|min:0',
-            'night' => 'required|integer|min:1',
-            'rate_desc' => 'nullable|string',
-            'package' => 'nullable|string',
-            'single_room' => 'nullable|integer|min:0',
-            'twin_room' => 'nullable|integer|min:0',
-            'triple_room' => 'nullable|integer|min:0',
-            'child_room' => 'nullable|integer|min:0',
-            'singleroom_price' => 'nullable|integer|min:0',
-            'twinroom_price' => 'nullable|integer|min:0',
-            'tripleroom_price' => 'nullable|integer|min:0',
-            'childroom_price' => 'nullable|integer|min:0',
-            'deposit' => 'nullable|integer|min:0',
-            'grand_total' => 'nullable|integer|min:0',
-        ]);
-
-        // Mapping ke kolom yang sesuai di DB
-        GroupBookingOrder::create([
-            'group_id' => $validated['visitor_id'], // Disimpan sebagai FK ke visitor
-            'hotel_id' => $validated['hotel_id'],
-            'sales_id' => $validated['sales_id'],
-            'check_in' => $validated['check_in'],
-            'check_out' => $validated['check_out'],
-            'event_type' => $validated['event_type'],
-            'qty_room' => $validated['qty_room'],
-            'extrabed' => $validated['extrabed'] ?? 0,
-            'adult' => $validated['adult'],
-            'child' => $validated['child'],
-            'baby' => $validated['baby'] ?? 0,
-            'night' => $validated['night'],
-            'rate_desc' => $validated['rate_desc'] ?? '',
-            'package' => $validated['package'] ?? '',
-            'single_room' => $validated['single_room'] ?? 0,
-            'twin_room' => $validated['twin_room'] ?? 0,
-            'triple_room' => $validated['triple_room'] ?? 0,
-            'child_room' => $validated['child_room'] ?? 0,
-            'singleroom_price' => $validated['singleroom_price'] ?? 0,
-            'twinroom_price' => $validated['twinroom_price'] ?? 0,
-            'tripleroom_price' => $validated['tripleroom_price'] ?? 0,
-            'childroom_price' => $validated['childroom_price'] ?? 0,
-            'deposit' => $validated['deposit'] ?? 0,
-            'grand_total' => $validated['grand_total'] ?? 0,
-        ]);
-        
-        return redirect('/bookingandreservation/groupbookingorder')->with('success', 'Group booking berhasil disimpan!');
-    });
-}));
-
-
-
-
+});
