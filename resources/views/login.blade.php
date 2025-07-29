@@ -1,6 +1,5 @@
 <x-layoutlogin>
     <x-slot:title>Tanjung Lesung Enterprise Resource Planning</x-slot:title>
-
     <head>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     </head>
@@ -20,18 +19,20 @@
             <div class="mb-4">
                 <label for="email" class="block text-gray-700 font-semibold">Email</label>
                 <input type="email" name="email" id="email" required 
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400">
             </div>
             
             <div class="mb-4">
                 <label for="password" class="block text-gray-700 font-semibold">Password</label>
                 <input type="password" name="password" id="password" required 
-                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
-            </div>
-
-            <button type="submit" class="w-full bg-pink-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
+                    class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-400">
+            </div>     
+            <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded-lg">
                 LOG IN
             </button>
+            <div class="mt-4 mb-2 text-center text-blue-500">
+                <a href="/account/resetpassword">Forget Password?</a>
+            </div>
         </form>
     </div>
 </x-layoutlogin>

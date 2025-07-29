@@ -159,7 +159,7 @@
                 </div>
             </div>
             <div class="linechart" style="margin-left:30px;">
-                <div class="box-rna-hotel">
+                {{-- <div class="box-rna-hotel">
                     <h2>Tanjung Lesung Resort: <br>Beach (Website)</h2>
                     <div class="hotel-groupbox-coloumn">
                         @forelse($beachData as $item)
@@ -185,7 +185,7 @@
                             <p style="color:white;">No hotel data found.</p>
                         @endforelse
                     </div>
-                </div>
+                </div> --}}
             </div>
             <span></span>
         </div>
