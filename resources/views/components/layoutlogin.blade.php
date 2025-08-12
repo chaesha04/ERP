@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    </head>
     <meta charset="UTF-8">
     <title>{{ $title ?? 'Tanjung Lesung Management System' }}</title>
     <style>

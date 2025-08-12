@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -9,6 +10,9 @@ class AuthController extends Controller
 {
     function login() {
         return view('login');
+    }
+    function resetpassword() {
+        return view('resetpassword');
     }
 
     function authenticating(Request $request) {
@@ -23,9 +27,9 @@ class AuthController extends Controller
             // Optional: redirect berdasarkan role
             $user = Auth::guard('employee')->user();
             if ($user->role === 'Sales Admin') {
-                return redirect()->intended('/sales/dashboard');
+                return redirect()->intended('/salesmodule');
             } elseif ($user->role === 'Inventory Admin') {
-                return redirect()->intended('/inventory/dashboard');
+                return redirect()->intended('/product/accommodation');
             }
 
             return redirect()->intended('/');

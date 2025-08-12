@@ -129,7 +129,7 @@ Route::middleware(['auth:employee'])->group(function () {
 
     Route::get('/bookingandreservation/accommodation', [WebsitetoERPController::class, 'index'])->name('websitetoerp.index');
     Route::get('/bookingandreservation/accommodation/{id}', [WebsitetoERPController::class, 'detail'])->name('websitetoerp.detail');
-    Route::post('/bookingandreservation/accommodation/statusfrontoffice/store', [StatusFrontOfficeController::class, 'store']);
+    // Route::post('/bookingandreservation/accommodation/statusfrontoffice/store', [StatusFrontOfficeController::class, 'store']);
 
     Route::get('/bookingandreservation/beach', [BeachTicketERPController::class, 'index'])->name('BeachTicketERP.index');
     Route::get('/bookingandreservation/beach/{order_code}', [BeachTicketERPController::class, 'detail'])->name('BeachTicketERP.detail');
@@ -456,7 +456,7 @@ Route::middleware(['auth:employee'])->group(function () {
 
     // Control Access Page - hanya bisa diakses oleh Super Admin
     Route::middleware(['role.access:Super Admin'])->group(function () {
-        Route::get('/controlaccess', [SettingController::class, 'controlAccess'])->name('controlaccess');
+    // Route::get('/controlaccess', [SettingController::class, 'controlAccess'])->name('controlaccess');
 
     Route::get('/controlaccess', function () {
         $controlaccess = Employee::all();

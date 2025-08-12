@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Akses Ditolak</title>
+    <title>Access Denied</title>
     <style>
         body {
             display: flex;
@@ -23,7 +23,9 @@
     </style>
 </head>
 <body>
-    <h2>⚠️ Anda tidak memiliki akses ke halaman ini.</h2>
-    <h3>Silakan hubungi tim IT</h3>
+    <h2>⚠️ Access Denied.</h2>
+    <h3>Please contact IT Team if you need this permission.</h3>
+    <br>
+    <a href="javascript:history.back()">Back to previous page</a>
 </body>
 </html>

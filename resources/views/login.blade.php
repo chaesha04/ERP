@@ -94,14 +94,14 @@
                         <small class="text-red-500">{{ $message }}</small>
                     @enderror
                     <div class="mb-4 relative">
-                        <input type="email" name="email" class="auth-input" placeholder="Email" required>
+                        <input type="email" name="email" id="email" required class="auth-input" placeholder="Email">
                     </div>
 
                     @error('password')
                         <small class="text-red-500">{{ $message }}</small>
                     @enderror
                     <div class="mb-4 relative">
-                        <input type="password" name="password" id="password" class="auth-input" placeholder="Password" required>
+                        <input type="password" name="password" id="password" required class="auth-input" placeholder="Password">
                         <i class="fas fa-eye toggle-password" id="togglePassword" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer;"></i>
                     </div>
 
@@ -113,7 +113,6 @@
                             <span>Keep me signed in</span>
                         </label>
                         <a href="{{ route('password.request') }}" class="forgot-password">Forgot Password?</a>
-
                     </div>
                 </form>
             </div>
