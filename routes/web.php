@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ProductAccomodation;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RNAController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BanqueteventorderController;
@@ -47,6 +48,10 @@ use App\Http\Controllers\StatusFrontOfficeController;
 use App\Http\Middleware\RoleAccessMiddleware;
 use App\Models\Banqueteventorder;
 use App\Models\HotelDetail;
+use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -60,8 +65,28 @@ use App\Models\HotelDetail;
 */
 
 Route::get('/login',[AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
+Route::post('/login', [AuthController::class, 'login']);
 Route::post('/login',[AuthController::class, 'authenticating']);
 Route::get('/logout',[AuthController::class, 'logout']);
+
+Route::get('/index', function () {
+    return view('verification.index');
+});
+
+Route::get('verify', [VerificationController::class, 'index']);
+Route::post('/verify', [VerificationController::class, 'store']);
+Route::get('/verify/{unique_id}', [VerificationController::class, 'show']);
+Route::put('/verify/{unique_id}', [VerificationController::class, 'update']);
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('otp.resend');
+
+// forgot password routes
+Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+// reset password routes
+Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 // Route akses ditolak
 Route::get('/access-denied', function () {
