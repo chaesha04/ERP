@@ -10,7 +10,7 @@ class WebsitetoERPController extends Controller
 {
         public function index(Request $request)
         {
-            $query = DB::connection('hotelwebapp2')->table('bookings');
+            $query = DB::connection('hotelweb')->table('bookings');
 
             if ($request->has('field') && $request->has('keyword')) {
                 $field = $request->input('field');
@@ -25,7 +25,7 @@ class WebsitetoERPController extends Controller
             ]);
         }
         public function detail($id){
-            $seedetail = DB::connection('hotelwebapp2')->table('bookings')->where('id', $id)->first();
+            $seedetail = DB::connection('hotelweb')->table('bookings')->where('id', $id)->first();
 
             if(!$seedetail){
                 abort(404);

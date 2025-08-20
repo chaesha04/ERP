@@ -49,6 +49,7 @@ use App\Http\Middleware\RoleAccessMiddleware;
 use App\Models\Banqueteventorder;
 use App\Models\HotelDetail;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AccommodationController;
 
 
 
@@ -62,6 +63,12 @@ use App\Http\Controllers\DashboardController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/bookingandreservation/accommodation', [AccommodationController::class, 'index']);
+Route::get('/bookingandreservation/accommodation/{id}', [AccommodationController::class, 'show']);
+
+// Ticket Orders routes
+Route::get('/bookingandreservation/beach', [AccommodationController::class, 'indexTicket']);
+Route::get('/bookingandreservation/beach/{id}', [AccommodationController::class, 'showTicket']);
 // Menampilkan form login (GET)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
@@ -135,12 +142,9 @@ Route::middleware(['auth:employee'])->group(function () {
     //     });
 
 
-    Route::get('/bookingandreservation/accommodation', [WebsitetoERPController::class, 'index'])->name('websitetoerp.index');
-    Route::get('/bookingandreservation/accommodation/{id}', [WebsitetoERPController::class, 'detail'])->name('websitetoerp.detail');
-    // Route::post('/bookingandreservation/accommodation/statusfrontoffice/store', [StatusFrontOfficeController::class, 'store']);
-
-    Route::get('/bookingandreservation/beach', [BeachTicketERPController::class, 'index'])->name('BeachTicketERP.index');
-    Route::get('/bookingandreservation/beach/{order_code}', [BeachTicketERPController::class, 'detail'])->name('BeachTicketERP.detail');
+        // Route::get('/bookingandreservation/accommodation', [WebsitetoERPController::class, 'index'])->name('websitetoerp.index');
+        // Route::get('/bookingandreservation/accommodation/{id}', [WebsitetoERPController::class, 'detail'])->name('websitetoerp.detail');
+        // // Route::post('/bookingandreservation/accommodation/statusfrontoffice/store', [StatusFrontOfficeController::class, 'store']);
 
     Route::get('/visitor', [VisitorDetailController::class, 'index'])->name('visitor.index');
 
@@ -453,6 +457,14 @@ Route::middleware(['auth:employee'])->group(function () {
 
         return redirect('/product/watersport')->with('success', 'Employee added successfully');
     });
+
+    // Menu Profile 
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
+
+    // Control Access hanya bisa diakses Admin
+    Route::middleware('role:Admin')->get('/settings/access', [SettingsController::class, 'access'])->name('settings.access');
+});
 
 
     // Settings

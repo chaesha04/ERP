@@ -2,37 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TicketOrder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Services\HotelDatabaseService;
 
 class BeachTicketERPController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DB::connection('hotelwebapp2')->table('ticket_orders');
-        if ($request->has('field') && $request->has('keyword')) {
-            $field = $request->input('field');
-            $keyword = $request->input('keyword');
-            $query->where($field, 'LIKE', "%$keyword%");
-        } 
+        // Data ticket_orders (Hotel DB)
+        $beachData = [];
+        $beachError = null;
 
-        $beachorderweb = $query->paginate(20);
+        try {
+            $beachService = new HotelDatabaseService();
+            $beachData = $beachService->getBeachTicketsFromDatabase();
 
-        return view('bnr_beach', compact('beachorderweb'), [
-            'title' => 'Beach | Website Order'
-        ]);
-    }
-    public function detail($order_code){
-        $seedetail = DB::connection('hotelwebapp2')->table('ticket_orders')->where('order_code', $order_code)->first();
+            // Filtering by keyword langsung di array hasil query
+            if ($request->filled('keyword')) {
+                $keyword = strtolower($request->keyword);
+                $field = $request->get('field', 'orders_code');
 
-        if (!$seedetail) {
-            abort(404);
+                $beachData = array_filter($beachData, function ($row) use ($field, $keyword) {
+                    $value = strtolower($row[$field] ?? '');
+                    return strpos($value, $keyword) !== false;
+                });
+            }
+        } catch (\Exception $e) {
+            $beachError = $e->getMessage();
         }
 
-        return view('bnr_beachdetail', compact('seedetail'), [
-            'title' => 'Accommodation | Website Detail'
+        return view('bnr_beach', [
+            'title'      => 'Beach',
+            'beachData'  => $beachData,
+            'beachError' => $beachError,
         ]);
     }
-
 }

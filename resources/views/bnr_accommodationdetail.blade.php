@@ -1,5 +1,5 @@
 <x-layout-sales>
-    <x-slot:title>{{ $title }}</x-slot:title>
+    <x-slot:title>{{ $title??'' }}</x-slot:title>
     <main>
         <div class="settings">
             <div class="data" style="margin-bottom: 70px">
@@ -22,8 +22,8 @@
                             <th style="background-color:pink;">Room ID</th>
                             <th style="background-color:pink;">Check In</th>
                             <th style="background-color:pink;">Check Out</th>
-                            <th style="background-color:pink;">Night</th>
                             <th style="background-color:pink;">Pax</th>
+                            <th style="background-color:pink;">Night</th>
                         </tr>
                     </thead>
                     <tbody>

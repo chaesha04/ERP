@@ -78,11 +78,11 @@ return [
             ]) : [],
         ],
 
-            'hotelwebapp2' => [ // koneksi kedua dari Azmi
+            'hotelweb' => [ // koneksi kedua dari Azmi
             'driver' => 'mysql',
             'host' => env('BOOKINGENGINE_DB_HOST', '127.0.0.1'),
             'port' => env('BOOKINGENGINE_DB_PORT', '3306'),
-            'database' => env('BOOKINGENGINE_DB_DATABASE', 'hotelwebapp'),
+            'database' => env('BOOKINGENGINE_DB_DATABASE', 'hotelweb'),
             'username' => env('BOOKINGENGINE_DB_USERNAME', 'root'),
             'password' => env('BOOKINGENGINE_DB_PASSWORD', ''),
             'charset' => 'utf8mb4',
